@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var multer = require('multer');
+var fs = require("fs")
 const bodyParser = require('body-parser');
 router.use(bodyParser.urlencoded({
   extended: true
@@ -26,16 +27,16 @@ router.get('/', function (req, res, next) {
 /* GET password page. */
 router.get('/password', function (req, res, next) {
   if (global.datas.algorithm == undefined) {
-      res.redirect("methods")
+    res.redirect("methods")
   }
-    res.render('password', {
+  res.render('password', {
     title: 'Password'
   });
 });
 /* GET download page. */
 router.get('/download', function (req, res, next) {
   if (global.datas.password == undefined) {
-        res.redirect("password")
+    res.redirect("password")
 
   }
   res.render('download', {
@@ -43,10 +44,65 @@ router.get('/download', function (req, res, next) {
   });
 });
 
+var hashing = new Promise(() => {
+  var text = fs.readFileSync('test.md', 'utf8')
+  console.log(text)
 
-router.post("/password", (req, res)=>{
-    global.datas.password = req.body.password
+  if (global.datas.method == "encrypt") {
+    switch (global.datas.algorithm) {
+      case "AES":
+        var encrypted = CryptoJS.AES.encrypt(text, global.datas.password);
+        fs.writeFileSync(global.datas.file.path);
+        break;
+      case "DES":
+
+        break;
+      case "Triple DES":
+
+        break;
+      case "Rabbit":
+
+        break;
+      case "RC4":
+
+        break;
+      case "RC4Drop":
+
+        break;
+      default:
+        break;
+    }
+  } else {
+    switch (global.datas.algorithm) {
+      case "AES":
+        var encrypted = CryptoJS.AES.encrypt(text, global.datas.password);
+        break;
+      case "DES":
+
+        break;
+      case "Triple DES":
+
+        break;
+      case "Rabbit":
+
+        break;
+      case "RC4":
+
+        break;
+      case "RC4Drop":
+
+        break;
+      default:
+        break;
+    }
+  }
+})
+
+router.post("/password", (req, res) => {
+  global.datas.password = req.body.password
+  hashing().then(() => {
     res.redirect("download")
+  })
 })
 router.post("/algorithm", (req, res) => {
   global.datas.algorithm = req.body.algorithm
@@ -55,11 +111,11 @@ router.post("/algorithm", (req, res) => {
 })
 
 router.get("/hashfile", (req, res) => {
-  if(global.datas.file == undefined){
+  if (global.datas.file == undefined) {
     res.redirect("/")
   }
   console.log(global.datas.file)
-  //res.download(global.datas.file)
+  res.download(global.datas.file.path)
 })
 
 router.post('/file', function (req, res) {
@@ -69,7 +125,7 @@ router.post('/file', function (req, res) {
       return res.end("Error uploading file.");
     }
     console.log(req.file)
-    global.datas.file  = req.file
+    global.datas.file = req.file
     res.send("success");
   });
 });
