@@ -1,0 +1,89 @@
+<script src="https://intranet.lamaterservice.com/airbus/public/assets/vendor/jquery/jquery-3.3.1.min.js"></script>
+
+</script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+    integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous">
+</script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+    integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous">
+</script>
+<script src="http://malsup.github.com/jquery.form.js">
+</script>
+<script>
+    $("#fichiers").change(function () {
+        var files = document.querySelector("#fichiers").files;
+        console.log(files)
+        if (files.length > 0) {
+            $(".change").attr("data-text", "")
+        } else {
+            $(".change").attr("data-text", "Déposez le fichier au format xlsx ici")
+        }
+        for (var i = 0; i < files.length; i++) {
+            element = files[i];
+            console.log(element);
+            $(".change").attr("data-text",
+                $(".change").attr("data-text") + " [" + element.name + "]")
+        }
+    })
+    $(document).ready(function () {
+
+        $('#files_form').ajaxForm({
+            beforeSend: function () {
+                $('#success').empty();
+            },
+            uploadProgress: function (event, position, total, percentComplete) {
+                $('.pbar2').text(percentComplete + '%');
+                $('.pbar2').css('width', percentComplete + '%');
+            },
+            success: function (data) { // alert(JSON.stringify(data)) 
+                console.log(data)
+                $('.pbar2').css('width', '100%'); // 
+                $('#files form ').submit()
+                if (data == "success") {
+                    document.location.href = "/methods";
+                }
+                // window.location.reload() // alert("Fichier uploadé avec succès. Recharger la page pour voir") 
+            }
+        });
+    })
+</script>
+<script>
+    let algorithm, ed;
+    fetch('../store.json')
+        .then(resp => resp.json())
+        .then(resp => {
+            resp.algos.forEach((elt, index) => {
+                // console.log("<button class='btn btn-primary albtn' id='algo-"+index+"' onclick='selectAlg('" + elt + "', " + index + ")'>" + elt + "</button>")
+                $('.algos').append("<button class='btn btn-primary albtn' id='algo-" + index +
+                    "' onclick='selectAlg(`" + elt + "`, " + index + ")'>" + elt + "</button>");
+            });
+        });
+
+    function selectAlg(elt, index) {
+        algorithm = elt;
+        $('.albtn').removeClass("green");
+        $("#algo-" + index).addClass("green");
+    }
+
+    function selectEd(elt, index) {
+        ed = elt;
+        $('.edbtn').removeClass("green");
+        $("#ed-" + index).addClass("green");
+    }
+    
+    function nextPage(){
+        if(ed && algorithm){
+            $.post("/algorithm", {algorithm: algorithm, method: ed}, (data)=>{
+                if(data.includes("success")){
+                    document.location.href="/password";
+                }
+            })
+        }
+        else{
+            alert("Please chose a method and an algorithm")
+        }
+    }
+</script>
+</body>
+
+</html>

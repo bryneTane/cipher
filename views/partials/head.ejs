@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Sécurité des SI</title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+        integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+
+    <style>
+        .change {
+            width: 100%;
+            height: 20vh;
+            border: 4px dashed #DDD;
+            position: relative;
+            border-radius: 5px;
+        }
+
+        .change::after {
+            content: attr(data-text);
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #eee;
+            font-size: 1.27rem;
+            color: #777;
+        }
+
+        .change input {
+            position: relative;
+            width: 100%;
+            z-index: 1000;
+            height: 100%;
+            opacity: 0;
+        }
+
+        .btn {
+            font-size: 1.2rem;
+            padding: 1rem 3rem;
+        }
+
+        .input {
+        width: 100%;
+        border-radius: 5px;
+        padding: 1.5rem;
+        font-size: 2rem;
+        border: 2px solid #333;
+        }
+
+        .btn.btn-large {
+            font-size: 1.2rem;
+            padding: 1rem 3rem;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- As a link -->
+    <nav class="navbar navbar-dark bg-primary">
+        <div class="container d-flex justify-content-between">
+            <a class="navbar-brand" href="/">Encrypt/Decrypt files</a>
+            <small class="text-white">By DJOPA & TANE</small>
+        </div>
+    </nav>
+    <br><br><br>

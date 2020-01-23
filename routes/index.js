@@ -25,7 +25,10 @@ router.get('/', function (req, res, next) {
 });
 /* GET password page. */
 router.get('/password', function (req, res, next) {
-  res.render('password', {
+  if (global.datas.algorithm == undefined) {
+      res.redirect("methods")
+  }
+    res.render('password', {
     title: 'Password'
   });
 });
@@ -44,6 +47,11 @@ router.get('/download', function (req, res, next) {
 router.post("/password", (req, res)=>{
     global.datas.password = req.body.password
     res.redirect("download")
+})
+router.post("/algorithm", (req, res) => {
+  global.datas.algorithm = req.body.algorithm
+  global.datas.method = req.body.method
+  res.send("success")
 })
 
 router.get("/hashfile", (req, res) => {
