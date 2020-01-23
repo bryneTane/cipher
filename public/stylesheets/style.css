@@ -1,37 +1,37 @@
-body {
-  padding: 50px;
+.methods {
+  /* padding: 50px; */
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
 }
 
-a {
+.methods a {
   color: #00B7FF;
 }
 
-.content{
+.methods.content {
   text-align: center;
 }
 
 
-.albtn{
+.methods .albtn {
   width: 250px;
-  height: 50px;
+  /* height: 50px; */
   margin: 30px;
 }
 
-.edbtn{
+.methods .edbtn {
   width: 250px;
-  height: 50px;
+  /* height: 50px; */
   margin: 30px;
 }
 
-.suiv{
+.methods .suiv {
   width: 250px;
-  height: 50px;
+  /* height: 50px; */
   margin: 30px;
   float: right;
 }
 
-.green{
+.methods .green {
   background-color: green !important;
   border-color: green !important;
 }
