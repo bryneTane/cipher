@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 var multer = require('multer');
 var fs = require("fs")
+var CryptoJS = require("crypto-js");
 const bodyParser = require('body-parser');
 router.use(bodyParser.urlencoded({
   extended: true
@@ -11,7 +12,7 @@ var storage = multer.diskStorage({
     callback(null, './uploads');
   },
   filename: function (req, file, callback) {
-    callback(null, file.fieldname + '-' + Date.now());
+    callback(null, file.fieldname + '-' + Date.now() + "__" + file.originalname);
   }
 });
 
@@ -21,6 +22,15 @@ var upload = multer({
 /* GET home page. */
 router.get('/', function (req, res, next) {
   res.render('index', {
+    title: 'Home'
+  });
+});
+/* GET method page. */
+router.get('/methods', function (req, res, next) {
+   if (global.datas.file == undefined) {
+     res.redirect("/")
+   }
+  res.render('methods', {
     title: 'Home'
   });
 });
@@ -44,29 +54,41 @@ router.get('/download', function (req, res, next) {
   });
 });
 
-var hashing = new Promise(() => {
-  var text = fs.readFileSync('test.md', 'utf8')
-  console.log(text)
 
+router.post("/passwordsave", (req, res) => {
+
+  console.log("datas")
+  global.datas.password = req.body.password
+  console.log(global.datas.file.path)
+  var text = fs.readFileSync(global.datas.file.path, 'utf8')
   if (global.datas.method == "encrypt") {
     switch (global.datas.algorithm) {
       case "AES":
-        var encrypted = CryptoJS.AES.encrypt(text, global.datas.password);
-        fs.writeFileSync(global.datas.file.path);
+        var content = CryptoJS.AES.encrypt(text, global.datas.password);
+        fs.writeFileSync(global.datas.file.path, content);
         break;
       case "DES":
-
+        var content = CryptoJS.DES.encrypt(text, global.datas.password);
+        fs.writeFileSync(global.datas.file.path, content);
         break;
       case "Triple DES":
+        var content = CryptoJS.TripleDES.encrypt(text, global.datas.password);
+        fs.writeFileSync(global.datas.file.path, content);
 
         break;
       case "Rabbit":
+        var content = CryptoJS.Rabbit.encrypt(text, global.datas.password);
+        fs.writeFileSync(global.datas.file.path, content);
 
         break;
       case "RC4":
+        var content = CryptoJS.RC4.encrypt(text, global.datas.password);
+        fs.writeFileSync(global.datas.file.path, content);
 
         break;
       case "RC4Drop":
+        var content = CryptoJS.RC4Drop.encrypt(text, global.datas.password);
+        fs.writeFileSync(global.datas.file.path, content);
 
         break;
       default:
@@ -75,34 +97,40 @@ var hashing = new Promise(() => {
   } else {
     switch (global.datas.algorithm) {
       case "AES":
-        var encrypted = CryptoJS.AES.encrypt(text, global.datas.password);
+        var encrypted = CryptoJS.AES.decrypt(text, global.datas.password);
+        fs.writeFileSync(global.datas.file.path, encrypted.toString(CryptoJS.enc.Utf8));
+        console.log("finish");
         break;
       case "DES":
+        var encrypted = CryptoJS.DES.decrypt(text, global.datas.password);
+        fs.writeFileSync(global.datas.file.path, encrypted.toString(CryptoJS.enc.Utf8));
 
         break;
       case "Triple DES":
+        var encrypted = CryptoJS.TripleDES.decrypt(text, global.datas.password);
+        fs.writeFileSync(global.datas.file.path, encrypted.toString(CryptoJS.enc.Utf8));
 
         break;
       case "Rabbit":
+        var encrypted = CryptoJS.Rabbit.decrypt(text, global.datas.password);
+        fs.writeFileSync(global.datas.file.path, encrypted.toString(CryptoJS.enc.Utf8));
 
         break;
       case "RC4":
+        var encrypted = CryptoJS.RC4.decrypt(text, global.datas.password);
+        fs.writeFileSync(global.datas.file.path, encrypted.toString(CryptoJS.enc.Utf8));
 
         break;
       case "RC4Drop":
+        var encrypted = CryptoJS.RC4Drop.decrypt(text, global.datas.password);
+        fs.writeFileSync(global.datas.file.path, encrypted.toString(CryptoJS.enc.Utf8));
 
         break;
       default:
         break;
     }
   }
-})
-
-router.post("/password", (req, res) => {
-  global.datas.password = req.body.password
-  hashing().then(() => {
-    res.redirect("download")
-  })
+  res.send("success")
 })
 router.post("/algorithm", (req, res) => {
   global.datas.algorithm = req.body.algorithm
@@ -114,7 +142,7 @@ router.get("/hashfile", (req, res) => {
   if (global.datas.file == undefined) {
     res.redirect("/")
   }
-  console.log(global.datas.file)
+  // console.log(global.datas.file)
   res.download(global.datas.file.path)
 })
 
@@ -124,8 +152,9 @@ router.post('/file', function (req, res) {
       console.log(err)
       return res.end("Error uploading file.");
     }
-    console.log(req.file)
+    //console.log(req.file)
     global.datas.file = req.file
+    //console.log(global.datas.file)
     res.send("success");
   });
 });
