@@ -82,7 +82,7 @@
         $("#ed-" + index).addClass("green");
     }
     
-    function nextPage(){
+    function validate(){
         if(ed && algorithm){
             $.post("/algorithm", {algorithm: algorithm, method: ed}, (data)=>{
                 if(data.includes("success")){
@@ -91,7 +91,7 @@
             })
         }
         else{
-            alert("Please chose a method and an algorithm")
+            $('.toast').toast('show');
         }
     }
 </script>
